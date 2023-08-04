@@ -18,6 +18,9 @@ const blogSchema = new Schema({
         type:Boolean,
         required:true
     },
+    tags: [{
+        type:String
+    }],
     likes: [{
         type:String
     }],

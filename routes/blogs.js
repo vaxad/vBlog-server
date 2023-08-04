@@ -77,14 +77,14 @@ router.post('/', fetchuser,[
         if(!user){
             return res.status(400).json({errors: "Please login with correct credentials"});
         }
-    const {title,content,public}=req.body;
+    const {title,content,public,tags}=req.body;
 
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({errors: errors.array()});
     }
     const blog=new Blog({
-        title,content,public,creator:req.user.id
+        title,content,public:public==="true"?true:false,creator:req.user.id,tags
     })
     const savedBlog= await blog.save();
     user.blogs.push(savedBlog._id)
@@ -100,7 +100,7 @@ router.post('/', fetchuser,[
 router.put('/:id', fetchuser,async(req,res)=>{
     try {
         
-    const {title,content,public}=req.body;
+    const {title,content,public,tags}=req.body;
     //store what creator wants to update
     const newBlog={};
         if(title){newBlog.title=title}
@@ -111,6 +111,7 @@ router.put('/:id', fetchuser,async(req,res)=>{
             else if(public==="true")
             newBlog.public=true
         };
+        if(tags){newBlog.tags=tags}
     
         //VERIFY USER
         let blog= await Blog.findById(req.params.id);
