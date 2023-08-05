@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 const commentSchema = new Schema({
+    commentor:{
+        type:Object,
+    },
     by:{
         type:String,
         required:true

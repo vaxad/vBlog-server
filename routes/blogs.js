@@ -9,7 +9,7 @@ const User = require('../models/User');
 //ROUTE 2: fetch all blogs using: GET '/api/fetchblogs'
 router.get('/fetchsome', fetchuser,async(req,res)=>{
     try {
-        const blogs=await Blog.find().limit(10)
+        const blogs=await Blog.find().limit(10).sort({likes:-1})
     res.json(blogs);
     } catch (error) {
         console.log(error.message);
@@ -20,7 +20,7 @@ router.get('/fetchsome', fetchuser,async(req,res)=>{
 
 router.get('/all', fetchuser,async(req,res)=>{
     try {
-        const blogs=await Blog.find()
+        const blogs=await Blog.find().sort({likes:-1})
     res.json(blogs);
     } catch (error) {
         console.log(error.message);

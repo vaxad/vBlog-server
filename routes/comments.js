@@ -11,14 +11,47 @@ const Blog = require('../models/Blog');
 
 router.get('/about/:id', fetchuser,async(req,res)=>{
     try {
-        const comments=await Comment.find({about:req.params.id})
-    res.json(comments);
+        const comments=await Comment.find({about:req.params.id}).limit(10).sort({likes:-1})
+    for(let i=0;i<comments.length;i++){
+        const commentor=await User.findById(comments[i].by)
+        comments[i].commentor=commentor
+    }
+    res.json(comments)
     } catch (error) {
         console.log(error.message);
     res.status(500).send("Internal server error");
     }
     
 })
+
+router.get('/aboutall/:id', fetchuser,async(req,res)=>{
+    try {
+        const comments=await Comment.find({about:req.params.id}).sort({likes:-1})
+    for(let i=0;i<comments.length;i++){
+        const commentor=await User.findById(comments[i].by)
+        comments[i].commentor=commentor
+    }
+    res.json(comments)
+    } catch (error) {
+        console.log(error.message);
+    res.status(500).send("Internal server error");
+    }
+    
+})
+
+// router.get('/about/:id', fetchuser,async(req,res)=>{
+//     try {
+//         const comments=await Comment.find({about:req.params.id}).limit(10)
+//     for(let i=0;i<comments.length;i++){
+//         const commentor=await User.findById(comments[i].by)
+//         comments[i].commentor=commentor
+//     }
+//     } catch (error) {
+//         console.log(error.message);
+//     res.status(500).send("Internal server error");
+//     }
+    
+// })
 
 //ROUTE 3: add new comment using: POST '/api/addcomment'
 
@@ -100,7 +133,8 @@ router.get('/:id', fetchuser,async(req,res)=>{
         //VERIFY USER
         let comment= await Comment.findById(req.params.id);
         if(!comment){ return res.status(404).send("Not found")}
-       
+        const commentor=await User.findById(comment.by)
+        comment.commentor=commentor
         res.json(comment);
 } catch (error) {
     console.log(error.message);
