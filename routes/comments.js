@@ -74,6 +74,8 @@ router.post('/:id', fetchuser,[
     })
     const savedComment= await comment.save();
     blog.comments.push(savedComment._id)
+    const commentor=await User.findById(req.user.id)
+    savedComment.commentor=commentor
     blog.save()
     res.json(savedComment);
 } catch (error) {
