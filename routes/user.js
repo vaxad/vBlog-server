@@ -26,7 +26,7 @@ router.post('/follow/:id', fetchuser,async (req,res)=>{
         res.json("followed successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
@@ -49,7 +49,7 @@ router.post('/unfollow/:id', fetchuser,async (req,res)=>{
         res.json("unfollowed successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
@@ -62,7 +62,7 @@ router.get('/:id',fetchuser, async (req,res)=>{
         const user=await User.findById(req.params.id).select("-password");
         res.send(user);
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
         res.status(500).send("Internal server error");
     }
     })

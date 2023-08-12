@@ -44,7 +44,7 @@ router.post('/', [
 
     res.json({authToken}) ;
 }catch(error){
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -83,7 +83,7 @@ router.post('/login', [
         res.json({authToken}) ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
@@ -97,7 +97,7 @@ try {
     const user=await User.findById(userId).select("-password");
     res.send(user);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })

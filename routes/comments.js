@@ -18,7 +18,7 @@ router.get('/about/:id', fetchuser,async(req,res)=>{
     }
     res.json(comments)
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -33,7 +33,7 @@ router.get('/aboutall/:id', fetchuser,async(req,res)=>{
     }
     res.json(comments)
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -47,7 +47,7 @@ router.get('/aboutall/:id', fetchuser,async(req,res)=>{
 //         comments[i].commentor=commentor
 //     }
 //     } catch (error) {
-//         console.log(error.message);
+//         //(error.message);
 //     res.status(500).send("Internal server error");
 //     }
     
@@ -59,7 +59,7 @@ router.post('/:id', fetchuser,[
     body('content','enter a valid content').isLength({min:1})
 ],async(req,res)=>{
     try {
-        console.log(req.params.id)
+        //(req.params.id)
         let blog=await Blog.findById(req.params.id)
         if(!blog){
             return res.status(400).json({errors: "Please login with correct credentials"});
@@ -79,7 +79,7 @@ router.post('/:id', fetchuser,[
     blog.save()
     res.json(savedComment);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -104,7 +104,7 @@ router.put('/:id', fetchuser,async(req,res)=>{
         comment=await Comment.findByIdAndUpdate(req.params.id,{$set:newComment},{new:true})
         res.json(comment);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -124,7 +124,7 @@ router.delete('/:id', fetchuser,async(req,res)=>{
         comment=await Comment.findByIdAndDelete(req.params.id);
         res.json("Comment was deleted"+comment);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -139,7 +139,7 @@ router.get('/:id', fetchuser,async(req,res)=>{
         comment.commentor=commentor
         res.json(comment);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -160,7 +160,7 @@ router.post('/like/:id', fetchuser,async (req,res)=>{
         res.json("liked successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
@@ -180,7 +180,7 @@ router.post('/unlike/:id', fetchuser,async (req,res)=>{
         res.json("unliked successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 

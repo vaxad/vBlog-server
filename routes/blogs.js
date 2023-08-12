@@ -9,10 +9,10 @@ const User = require('../models/User');
 //ROUTE 2: fetch all blogs using: GET '/api/fetchblogs'
 router.get('/fetchsome', fetchuser,async(req,res)=>{
     try {
-        const blogs=await Blog.find().limit(10).sort({likes:-1})
+        const blogs=await Blog.find({public:true}).limit(10).sort({likes:-1})
     res.json(blogs);
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -20,10 +20,10 @@ router.get('/fetchsome', fetchuser,async(req,res)=>{
 
 router.get('/all', fetchuser,async(req,res)=>{
     try {
-        const blogs=await Blog.find().sort({likes:-1})
+        const blogs=await Blog.find({public:true}).sort({likes:-1})
     res.json(blogs);
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -34,15 +34,14 @@ router.get('/', fetchuser,async(req,res)=>{
         const user = await User.findById(req.user.id)
         const blogs=await Blog.find({creator:{$in:user.following}})
         if(user.following.length<3){
-            const extra=await Blog.find({creator:{$not:{$in:user.following.concat([req.user.id])}}}).limit(10).sort({likes:-1})
-            console.log(extra)
+            const extra=await Blog.find({creator:{$not:{$in:user.following.concat([req.user.id])}}, public:true}).limit(10).sort({likes:-1})
             const fblogs=blogs.concat(extra)
             res.json(fblogs);
         }else{
              res.json(blogs);
         }
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -51,13 +50,16 @@ router.get('/', fetchuser,async(req,res)=>{
 
 router.get('/by/:id', fetchuser,async(req,res)=>{
     try {
-        const user = await User.findById(req.user.id)
-        const blogs=await Blog.find({creator:req.params.id}).sort({likes:-1})
-        
+        if(req.params.id!==req.user.id){
+        const blogs=await Blog.find({creator:req.params.id,public:true}).sort({likes:-1})
         res.json(blogs);
+        }else{
+            const blogs=await Blog.find({creator:req.params.id}).sort({likes:-1})
+            res.json(blogs); 
+        }
     
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
     
@@ -91,7 +93,7 @@ router.post('/', fetchuser,[
     user.save()
     res.json(savedBlog);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -124,7 +126,7 @@ router.put('/:id', fetchuser,async(req,res)=>{
         blog=await Blog.findByIdAndUpdate(req.params.id,{$set:newBlog},{new:true})
         res.json(blog);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -144,7 +146,7 @@ router.delete('/:id', fetchuser,async(req,res)=>{
         blog=await Blog.findByIdAndDelete(req.params.id);
         res.json("Blog was deleted"+blog);
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -152,14 +154,15 @@ router.delete('/:id', fetchuser,async(req,res)=>{
 router.get('/:id', fetchuser,async(req,res)=>{
     try {
     
-        //VERIFY USER
         let blog= await Blog.findById(req.params.id);
         if(!blog){ return res.status(404).send("Not found")}
-       
-        //delete blog
+        if((blog.creator.toString()!=req.user.id)&&(!blog.public)){
+            return res.status(401).send("Not Allowed")
+        }else{
         res.json(blog);
+        }
 } catch (error) {
-    console.log(error.message);
+    //(error.message);
     res.status(500).send("Internal server error");
 }
 })
@@ -179,7 +182,7 @@ router.post('/like/:id', fetchuser,async (req,res)=>{
         res.json("liked successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
@@ -199,7 +202,7 @@ router.post('/unlike/:id', fetchuser,async (req,res)=>{
         res.json("unliked successfully") ;
 
     } catch (error) {
-        console.log(error.message);
+        //(error.message);
     res.status(500).send("Internal server error");
     }
 
